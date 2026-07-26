@@ -48,8 +48,24 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 body {
@@ -109,20 +125,14 @@ body {
   outline-offset: 4px;
 }
 
-/* Scrollbar */
+/* Hide scrollbar for smooth scrolling without a bar */
 ::-webkit-scrollbar {
-  width: 14px;
-  border-left: 3px solid var(--color-border);
+  display: none;
 }
-::-webkit-scrollbar-track {
-  background: var(--color-bg);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-accent);
-  border: 3px solid var(--color-border);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent-hover);
+
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* Animations */
@@ -141,6 +151,11 @@ body {
   to { opacity: 1; }
 }
 
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.3s ease-out forwards;
 }
@@ -151,6 +166,10 @@ body {
 
 .animate-fade-in {
   animation: fadeIn 0.2s ease-out forwards;
+}
+
+.animate-slide-up-fade {
+  animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .delay-100 { animation-delay: 100ms; }

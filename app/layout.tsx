@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { OpeningAnimation } from "@/components/OpeningAnimation";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import "./globals.css";
 
 const inter = Inter({
@@ -38,10 +42,17 @@ export default function RootLayout({
       className={`${inter.variable} ${jetbrainsMono.variable} h-full`}
       suppressHydrationWarning
     >
-      <body
-        className="min-h-full flex flex-col antialiased"
-      >
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className="min-h-full flex flex-col antialiased">
+        <SmoothScroll>
+          <OpeningAnimation />
+          <ThemeProvider>
+            <div className="min-h-screen flex flex-col font-bold bg-white text-black overflow-x-hidden">
+              <Header />
+              {children}
+              <Footer />
+            </div>
+          </ThemeProvider>
+        </SmoothScroll>
       </body>
     </html>
   );
