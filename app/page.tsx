@@ -127,17 +127,33 @@ export default function Home() {
       }
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = downloadUrl;
       const sanitizedTitle = title
         ? title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30)
         : "study-notes";
-      a.download = `chatnotes-${sanitizedTitle}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(downloadUrl);
+      const filename = `chatnotes-${sanitizedTitle}.pdf`;
+
+      // Mobile Safari and some mobile browsers don't support
+      // programmatic a.click() on blob URLs. Use window.open()
+      // as a fallback for those environments.
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        // On mobile, open the PDF in a new tab — the user can
+        // then use the browser's native share/save functionality
+        const blobUrl = window.URL.createObjectURL(blob);
+        window.open(blobUrl, "_blank");
+        // Don't revoke immediately — the new tab needs time to load
+        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
+      } else {
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+      }
 
       setState("preview");
     } catch (err) {

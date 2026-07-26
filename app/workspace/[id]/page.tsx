@@ -78,17 +78,29 @@ export default function NoteViewerPage({ params }: { params: Promise<{ id: strin
       }
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = downloadUrl;
       const sanitizedTitle = note.title
         ? note.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30)
         : "study-notes";
-      a.download = `chatnotes-${sanitizedTitle}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(downloadUrl);
+      const filename = `chatnotes-${sanitizedTitle}.pdf`;
+
+      // Mobile Safari and some mobile browsers don't support
+      // programmatic a.click() on blob URLs.
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile) {
+        const blobUrl = window.URL.createObjectURL(blob);
+        window.open(blobUrl, "_blank");
+        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
+      } else {
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = downloadUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(downloadUrl);
+      }
     } catch (err) {
       console.error(err);
       alert("Failed to download PDF.");
