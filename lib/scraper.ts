@@ -156,6 +156,36 @@ async function extractChatGPTViaApi(url: string): Promise<ConversationTurn[] | n
   }
 }
 
+// ─── Jina AI Proxy (Cloudflare bypass for Vercel) ────────────────────────────
+
+async function extractViaJina(url: string): Promise<ConversationTurn[] | null> {
+  try {
+    console.log(`[scraper] Attempting Jina AI extraction for ${url}…`);
+    const res = await fetch(`https://r.jina.ai/${url}`, {
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!res.ok) {
+      console.log(`[scraper] Jina AI returned ${res.status}`);
+      return null;
+    }
+
+    const data = await res.json();
+    const content = data?.data?.content || data?.data?.text;
+    
+    if (content && typeof content === "string" && content.trim().length > 0) {
+      // Jina returns the entire page as Markdown. We return it as a single
+      // assistant turn so the downstream extractor can parse it normally.
+      return [{ role: "assistant", content: cleanText(content) }];
+    }
+  } catch (err) {
+    console.log(`[scraper] Jina AI fetch failed: ${err instanceof Error ? err.message : err}`);
+  }
+  return null;
+}
+
 // ─── Cheerio-based extraction ────────────────────────────────────────────────
 
 async function fetchHTML(url: string): Promise<string> {
@@ -574,9 +604,16 @@ export async function scrapeConversation(
       console.log(`[scraper] ✓ Cheerio succeeded: ${turns.length} turns extracted`);
       return { turns, platform, method: "cheerio" };
     }
-    console.log("[scraper] Cheerio returned no turns, falling back to Puppeteer…");
+    console.log("[scraper] Cheerio returned no turns");
   } catch (err) {
     console.log(`[scraper] Cheerio failed: ${err instanceof Error ? err.message : err}`);
+  }
+
+  // ── Fast path 3: Jina AI (Cloudflare Bypass for Vercel) ──
+  const jinaTurns = await extractViaJina(url);
+  if (jinaTurns && jinaTurns.length > 0) {
+    console.log(`[scraper] ✓ Jina AI succeeded: extracted full markdown`);
+    return { turns: jinaTurns, platform, method: "jina" };
   }
 
   // ── Fallback: Puppeteer ──
