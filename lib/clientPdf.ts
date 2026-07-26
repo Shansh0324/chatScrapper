@@ -28,7 +28,7 @@ function getPdfStyles(theme: string = "light"): string {
   const mutedText = isDark ? "#888888" : "#64748b";
 
   return `
-    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
     @page { size: A4; margin: 40px 40px 50px 10px; }
 
@@ -40,9 +40,9 @@ function getPdfStyles(theme: string = "light"): string {
     }
 
     body {
-      font-family: 'Caveat', cursive;
-      font-size: 16pt;
-      line-height: 34px;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11pt;
+      line-height: 28px;
       color: ${text};
     }
 
@@ -64,19 +64,19 @@ function getPdfStyles(theme: string = "light"): string {
       line-height: 34px;
       margin-bottom: 34px;
       border-bottom: 1px solid ${ruleLine};
-      font-size: 12pt;
+      font-size: 11pt;
       color: ${mutedText};
     }
 
-    .pdf-header .brand { font-weight: 700; color: ${headerText}; font-size: 14pt; }
+    .pdf-header .brand { font-weight: 700; color: ${headerText}; font-size: 12pt; }
 
     .title-block {
       margin-bottom: 34px;
       text-align: center;
     }
     .title-block h1 {
-      font-size: 32pt;
-      line-height: 68px;
+      font-size: 24pt;
+      line-height: 1.4;
       font-weight: 700;
       color: ${headerText};
       text-decoration: underline;
@@ -86,32 +86,32 @@ function getPdfStyles(theme: string = "light"): string {
       border-bottom: 1px solid ${ruleLine};
     }
     .title-block .author {
-      font-size: 15pt;
+      font-size: 12pt;
       color: ${mutedText};
-      line-height: 34px;
+      line-height: 28px;
       border-bottom: 1px solid ${ruleLine};
     }
 
     h1 {
-      font-size: 24pt; font-weight: 700; color: ${headerText};
-      margin-top: 34px; line-height: 34px;
+      font-size: 20pt; font-weight: 700; color: ${headerText};
+      margin-top: 28px; line-height: 28px;
       border-bottom: 1px solid ${ruleLine};
     }
     h2 {
-      font-size: 20pt; font-weight: 700; color: ${headerText};
-      margin-top: 34px; line-height: 34px;
+      font-size: 16pt; font-weight: 700; color: ${headerText};
+      margin-top: 28px; line-height: 28px;
       border-bottom: 1px solid ${ruleLine};
       text-decoration: underline; text-decoration-style: dashed;
       text-underline-offset: 4px; text-decoration-color: ${tableBorder};
     }
     h3 {
-      font-size: 17pt; font-weight: 700; color: ${headerText};
-      margin-top: 34px; line-height: 34px;
+      font-size: 14pt; font-weight: 700; color: ${headerText};
+      margin-top: 28px; line-height: 28px;
       border-bottom: 1px solid ${ruleLine};
     }
 
     p {
-      line-height: 34px;
+      line-height: 28px;
       border-bottom: 1px solid ${ruleLine};
       margin: 0;
       padding: 0;
@@ -126,7 +126,7 @@ function getPdfStyles(theme: string = "light"): string {
 
     ul, ol { padding-left: 24px; }
     li {
-      line-height: 34px;
+      line-height: 28px;
       border-bottom: 1px solid ${ruleLine};
     }
     
