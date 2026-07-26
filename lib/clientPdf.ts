@@ -269,7 +269,10 @@ export function generatePdfClientSide(
       iframeDoc.close();
 
       // Wait for fonts and content to load, then trigger print
+      let printed = false;
       const triggerPrint = () => {
+        if (printed) return;
+        printed = true;
         try {
           iframe.contentWindow?.focus();
           iframe.contentWindow?.print();
