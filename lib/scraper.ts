@@ -1,6 +1,8 @@
 import * as cheerio from "cheerio";
 import puppeteer, { type Browser, type Page } from "puppeteer-core";
 import TurndownService from "turndown";
+// @ts-ignore
+import { gfm } from "turndown-plugin-gfm";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -35,15 +37,12 @@ import { launchBrowser } from "./browser";
 function cleanText(raw: string): string {
   let text = raw
     .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/?(p|div|li|ul|ol|h[1-6])[^>]*>/gi, "\n")
-    .replace(/<[^>]+>/g, "")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
     .replace(/&nbsp;/g, " ")
-    .replace(/\n{3,}/g, "\n\n")
     .trim();
 
   return text;
@@ -399,6 +398,7 @@ async function autoScroll(page: Page): Promise<void> {
 async function extractChatGPTPuppeteer(url: string): Promise<ConversationTurn[]> {
   const browser = await launchBrowser();
   const turndownService = new TurndownService({ codeBlockStyle: 'fenced' });
+  turndownService.use(gfm);
 
   try {
     const page = await browser.newPage();
@@ -471,6 +471,7 @@ async function extractChatGPTPuppeteer(url: string): Promise<ConversationTurn[]>
 async function extractClaudePuppeteer(url: string): Promise<ConversationTurn[]> {
   const browser = await launchBrowser();
   const turndownService = new TurndownService({ codeBlockStyle: 'fenced' });
+  turndownService.use(gfm);
 
   try {
     const page = await browser.newPage();

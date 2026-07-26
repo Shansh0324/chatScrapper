@@ -6,8 +6,8 @@ Turn shared Claude and ChatGPT conversation links into downloadable PDF study no
 
 - **Dual-platform support**: Works with shared links from both Claude.ai and ChatGPT (chatgpt.com / chat.openai.com)
 - **Smart scraping**: Cheerio-based fast path with Puppeteer fallback for robust content extraction
-- **Local NLP**: TextRank sentence ranking, topic filtering, automatic section detection — no AI APIs
-- **Professional PDF output**: Clean typography, styled code blocks, page numbers, metadata header
+- **Clean Extraction**: Extracts full conversation, stripping emojis and removing user prompts to leave just the core assistant output.
+- **Professional PDF output**: Clean typography, distinct code blocks, and professional styling.
 - **Dark/Light mode**: Fully responsive landing page with theme toggle
 - **Rate limiting**: Per-IP request throttling to prevent abuse
 
@@ -16,7 +16,6 @@ Turn shared Claude and ChatGPT conversation links into downloadable PDF study no
 - **Framework**: Next.js 14 (App Router)
 - **Styling**: Tailwind CSS v4
 - **Scraping**: Cheerio (fast path) + Puppeteer (fallback)
-- **NLP**: Custom TextRank implementation with built-in stopwords and sentence tokenizer
 - **PDF**: Puppeteer PDF rendering with custom stylesheet
 - **Icons**: Lucide React
 - **Theme**: next-themes
@@ -80,9 +79,9 @@ cp .env.example .env.local
 
 1. **Scraping**: The scraper detects the platform from the URL domain. It first tries fetching raw HTML and parsing embedded JSON (like `__NEXT_DATA__`) with Cheerio. If that yields no results, it falls back to Puppeteer to render the page and extract messages from the DOM.
 
-2. **Notes Extraction**: Assistant responses are joined and tokenized into sentences. A TextRank algorithm builds a similarity graph using shared significant words (after stopword removal), runs PageRank-style iterations, and selects top-scoring sentences. These are reordered chronologically, grouped into sections using topic-shift detection, and code blocks are preserved separately.
+2. **Notes Extraction**: Assistant responses are extracted cleanly, filtering out emojis and skipping over user prompts. This perfectly preserves the context of the answers while maintaining a professional study note format. All of this runs completely locally in the Node.js process. **No user data is ever sent to an external server**.
 
-3. **PDF Generation**: The Markdown notes are converted to HTML with a professional print stylesheet, then rendered to a PDF using Puppeteer with proper margins, page numbers, and a metadata header.
+3. **PDF Generation**: The Markdown notes are converted to HTML with a professional print stylesheet featuring sleek code block accents, then rendered to a PDF using Puppeteer.
 
 ## Deployment on Vercel
 

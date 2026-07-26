@@ -40,7 +40,6 @@ export default function RootLayout({
     >
       <body
         className="min-h-full flex flex-col antialiased"
-        style={{ fontFamily: "var(--font-inter), system-ui, sans-serif" }}
       >
         <ThemeProvider>{children}</ThemeProvider>
       </body>

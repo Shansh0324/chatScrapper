@@ -180,60 +180,22 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // ── Step 2: Format notes (local) ──
+  // ── Step 2: Extract notes (local AI) ──
   let markdown: string;
   try {
-    console.log(`[api] Formatting notes (topic: ${topic ?? "none"})…`);
-    
-    // Add an optional header if a topic was specified
-    const header = topic ? `> **Topic Focus:** ${topic}\n\n---\n\n` : "";
-    
-    // Combine all turns into a clean markdown document
-    const body = turns
-      .map((t) => `**${t.role === "user" ? "You" : "Assistant"}**\n\n${t.content}`)
-      .join("\n\n---\n\n");
-      
-    markdown = header + body;
-    console.log(`[api] Notes formatted: ${markdown.length} chars`);
+    console.log(`[api] Extracting notes with clean pipeline (topic: ${topic ?? "none"})…`);
+    markdown = await extractNotes(turns, topic);
+    console.log(`[api] Notes extracted: ${markdown.length} chars`);
   } catch (err) {
-    console.error("[api] Note formatting failed:", err);
+    console.error("[api] Note extraction failed:", err);
     return NextResponse.json(
       {
-        error:
-          "Failed to format study notes from the conversation.",
+        error: "Failed to generate study notes. The content may be unsupported.",
       },
       { status: 500 }
     );
   }
 
-  // ── Step 3: Generate PDF ──
-  let pdfBuffer: Buffer;
-  try {
-    console.log("[api] Generating PDF…");
-    pdfBuffer = await generatePdf(markdown, platform);
-    console.log(`[api] PDF generated: ${pdfBuffer.length} bytes`);
-  } catch (err) {
-    console.error("[api] PDF generation failed:", err);
-    return NextResponse.json(
-      {
-        error:
-          "Failed to generate the PDF. Please try again in a moment.",
-      },
-      { status: 500 }
-    );
-  }
-
-  // ── Return PDF ──
-  const filename = `chatnotes-${platform}-${Date.now()}.pdf`;
-
-  return new NextResponse(new Uint8Array(pdfBuffer), {
-    status: 200,
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${filename}"`,
-      "Content-Length": String(pdfBuffer.length),
-      "X-RateLimit-Remaining": String(rateLimit.remaining),
-      "Cache-Control": "no-store",
-    },
-  });
+  // Return the markdown and platform so the frontend can preview it
+  return NextResponse.json({ markdown, platform });
 }
