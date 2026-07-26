@@ -61,46 +61,12 @@ export default function NoteViewerPage({ params }: { params: Promise<{ id: strin
     setIsDownloading(true);
 
     try {
-      const res = await fetch("/api/generate-pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          markdown: note.markdown,
-          platform: note.platform,
-          title: note.title,
-          author: note.author,
-          theme: "light",
-        }),
+      const { generatePdfClientSide } = await import("@/lib/clientPdf");
+      await generatePdfClientSide(note.markdown, note.platform, {
+        title: note.title,
+        author: note.author,
+        theme: "light",
       });
-
-      if (!res.ok) {
-        throw new Error("Failed to generate PDF");
-      }
-
-      const blob = await res.blob();
-      const sanitizedTitle = note.title
-        ? note.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30)
-        : "study-notes";
-      const filename = `chatnotes-${sanitizedTitle}.pdf`;
-
-      // Mobile Safari and some mobile browsers don't support
-      // programmatic a.click() on blob URLs.
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-      if (isMobile) {
-        const blobUrl = window.URL.createObjectURL(blob);
-        window.open(blobUrl, "_blank");
-        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
-      } else {
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = downloadUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(downloadUrl);
-      }
     } catch (err) {
       console.error(err);
       alert("Failed to download PDF.");

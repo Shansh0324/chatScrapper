@@ -109,51 +109,14 @@ export default function Home() {
     setError("");
 
     try {
-      const res = await fetch("/api/generate-pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          markdown: extractedMarkdown,
-          platform: extractedPlatform,
-          title: title.trim() || undefined,
-          author: author.trim() || undefined,
-          theme: pdfTheme,
-        }),
+      // Use client-side PDF generation (browser print)
+      // This avoids the Puppeteer/Chromium dependency that fails on Vercel serverless
+      const { generatePdfClientSide } = await import("@/lib/clientPdf");
+      await generatePdfClientSide(extractedMarkdown, extractedPlatform, {
+        title: title.trim() || undefined,
+        author: author.trim() || undefined,
+        theme: pdfTheme,
       });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({ error: "Something went wrong" }));
-        throw new Error(data.error || `Request failed (${res.status})`);
-      }
-
-      const blob = await res.blob();
-      const sanitizedTitle = title
-        ? title.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 30)
-        : "study-notes";
-      const filename = `chatnotes-${sanitizedTitle}.pdf`;
-
-      // Mobile Safari and some mobile browsers don't support
-      // programmatic a.click() on blob URLs. Use window.open()
-      // as a fallback for those environments.
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-      if (isMobile) {
-        // On mobile, open the PDF in a new tab — the user can
-        // then use the browser's native share/save functionality
-        const blobUrl = window.URL.createObjectURL(blob);
-        window.open(blobUrl, "_blank");
-        // Don't revoke immediately — the new tab needs time to load
-        setTimeout(() => window.URL.revokeObjectURL(blobUrl), 60000);
-      } else {
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = downloadUrl;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        window.URL.revokeObjectURL(downloadUrl);
-      }
 
       setState("preview");
     } catch (err) {
