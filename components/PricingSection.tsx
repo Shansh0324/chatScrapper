@@ -16,13 +16,13 @@ export function PricingSection() {
         {/* Free Tier */}
         <div className="brutal-border brutal-shadow-static bg-white p-8 sm:p-12 flex flex-col">
           <h3 className="text-4xl font-black uppercase mb-4">Basic</h3>
-          <div className="text-6xl font-black mb-8">$0<span className="text-2xl text-gray-500">/mo</span></div>
+          <div className="text-6xl font-black mb-8">₹0<span className="text-2xl text-gray-500">/mo</span></div>
           <ul className="space-y-4 mb-12 flex-1">
             <li className="flex items-center text-xl font-bold gap-3">
               <span className="text-[#ff00ff]">●</span> Up to 5 Notes/month
             </li>
             <li className="flex items-center text-xl font-bold gap-3">
-              <span className="text-[#ff00ff]">●</span> ChatGPT & Claude Support
+              <span className="text-[#ff00ff]">●</span> Works with any AI Chat
             </li>
             <li className="flex items-center text-xl font-bold gap-3">
               <span className="text-[#ff00ff]">●</span> Standard PDF Export
@@ -42,7 +42,7 @@ export function PricingSection() {
             Most Popular
           </div>
           <h3 className="text-4xl font-black uppercase mb-4">Pro</h3>
-          <div className="text-6xl font-black mb-8">$9<span className="text-2xl text-white/70">/mo</span></div>
+          <div className="text-6xl font-black mb-8">₹99<span className="text-2xl text-white/70">/mo</span></div>
           <ul className="space-y-4 mb-12 flex-1">
             <li className="flex items-center text-xl font-bold gap-3">
               <span className="text-black">●</span> Unlimited Notes
