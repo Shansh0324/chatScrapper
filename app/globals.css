@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;900&display=swap');
-
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
@@ -71,7 +69,7 @@ html.lenis, html.lenis body {
 body {
   background-color: var(--color-bg);
   color: var(--color-text-primary);
-  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-space-grotesk), system-ui, -apple-system, sans-serif;
   transition: background-color 0.1s, color 0.1s;
 }
 
@@ -113,8 +111,8 @@ body {
   letter-spacing: -0.05em;
 }
 
-.logo-chat { color: #ffffff; }
-.logo-notes { color: #ff00ff; }
+.logo-chat { color: #ffffff; font-family: var(--font-inter), sans-serif; }
+.logo-notes { color: #ff00ff; font-family: var(--font-jetbrains-mono), monospace; }
 
 /* ── Existing utilities adapted ── */
 .focus-ring {
