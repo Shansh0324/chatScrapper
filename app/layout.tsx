@@ -52,7 +52,7 @@ export default function RootLayout({
         <SmoothScroll>
           <OpeningAnimation />
           <ThemeProvider>
-            <div className="min-h-screen flex flex-col font-bold overflow-x-hidden">
+            <div className="min-h-screen flex flex-col font-bold bg-white text-black overflow-x-hidden">
               <Header />
               {children}
               <Footer />
